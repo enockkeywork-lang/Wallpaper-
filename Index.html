@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enock Wallpapers App</title>
+    <link rel="stylesheet" href="Style.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo">ENOCK <span>WALLPAPERS</span></div>
+    </header>
+
+    <section class="hero-banner">
+        <h1>4K Wallpapers App</h1>
+        <p>Buri gihe ufunguye App, ubona ama-wallpaper masha nshizeho!</p>
+    </section>
+
+    <main class="container">
+        <h2 class="section-title">Wallpapers Zose Zigezweho</h2>
+        
+        <div class="wallpaper-grid" id="wallpaperContainer">
+            <p style="text-align: center; color: #ff007f;">Iri kuzana ama-wallpaper...</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Enock Wallpapers Studio. Uburenganzira bwose burasuguye.</p>
+    </footer>
+
+    <script>
+        // --- INAMA: Hindura hano hashire IZINA RYAWE rya GitHub ---
+        const githubUsername = "enockkeywork-lar"; // Shira izina ryawe rya GitHub neza
+        const repositoryName = "Wallpaper-"; // Izina rya repository yawe
+        
+        // Umuhanda ugana ku madosiye yawe
+        const apiUrl = `https://api.github.com/repos/${githubUsername}/${repositoryName}/contents/`;
+
+        async function loadWallpapers() {
+            try {
+                const response = await fetch(apiUrl);
+                const files = await response.json();
+                const container = document.getElementById("wallpaperContainer");
+                container.innerHTML = ""; // Siba amagambo yari ariho
+
+                // Shungura amadosiye ushake amafoto gusa (png, jpg, jpeg)
+                const images = files.filter(file => 
+                    file.name.endsWith('.jpg') || 
+                    file.name.endsWith('.png') || 
+                    file.name.endsWith('.jpeg')
+                );
+
+                if(images.length === 0) {
+                    container.innerHTML = "<p>Nta foto nshya iraboneka muri Folder.</p>";
+                    return;
+                }
+
+                // Ena buri foto uyigire akakarita kuri App
+                images.forEach(img => {
+                    // Kuramo izina ry'ifoto utononnye uduce twa nyuma (.png)
+                    let cleanName = img.name.replace(/\.[^/.]+$/, "").replace(/_/g, " ");
+                    
+                    container.innerHTML += `
+                        <div class="wallpaper-card">
+                            <div class="badge premium">Premium</div>
+                            <img src="${img.download_url}" alt="${cleanName}">
+                            <div class="card-info">
+                                <h3>${cleanName}</h3>
+                                <p class="price">1,000 RWF</p>
+                                <button class="btn-buy" onclick="alert('Ugiye kugura: ${cleanName}')">Gura Ngaho</button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+            } catch (error) {
+                console.error("Ikosa ryabaye:", error);
+                document.getElementById("wallpaperContainer").innerHTML = "<p style='color:red;'>Internet ntabwo iri gukora neza!</p>";
+            }
+        }
+
+        // Tangiza gushaka amashusho
+        loadWallpapers();
+    </script>
+</body>
+</html>
+
